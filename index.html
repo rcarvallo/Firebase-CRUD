@@ -109,9 +109,11 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore();
         const colleccionTicket = collection(db, 'ticket');
-        
-        bodyTicket = $('#bodyTicket').val();
+
+        let bodyTicket = $('#bodyTicket').val();
         console.log(bodyTicket);
+
+   
         
         $('form').submit(function(e){
              e.preventDefault();
@@ -139,6 +141,45 @@
 
         });
        
+        //Programacion de los botones 
+        $('#btnagregar').click(function(){
+          $('#id').val('');
+          $('#codigo').val('');
+          $('#nombre').val('');
+          $('#descripcion').val('');
+          $('form').trigger('reset');
+          $('#modal').modal('show');
+        });
+
+        $('#tablaticket').on('click', 'btnEditar', function(){
+         let id = $(this).closest('tr').attr('id');
+         let codigo = $(this).closest('tr').find('td:eq(0)').text();
+         let nombre = $(this).closest('tr').find('td:eq(1)').text();
+         let descripcion = $(this).closest('tr').find('td:eq(2)').text();
+         $('#id').val(id);
+         $('#codigo').val(codigo);
+         $('#nombre').val(nombre);
+         $('#descripcion').val(descripcion);
+         $('#modal').modal('show');
+        });
+
+        $('#tablaticket').on('click', 'btnBorrar', function(){
+          swal.fire({
+            title: '¿Estas seguro de eliminar el producto?',
+            text: "¡Esta operacion no se puede revertir!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Borrar'
+          }).then((result) => {
+            if (result.value) {
+              let id = $(this).closest('tr').attr('id');
+              db.ref(`ticket/${id}`).remove()
+              swal.fire('¡Eliminado!', 'El ticket ha sido eliminado', 'sucess')
+            }
+          })
+        });
       </script>
 
   </body>
